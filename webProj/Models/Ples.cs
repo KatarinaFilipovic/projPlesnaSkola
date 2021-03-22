@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace webProj.Models
 {
@@ -7,6 +8,8 @@ namespace webProj.Models
     {
         public int ID {get; set;}
         public string Oznaka  {get; set;}
+       
+        [MaxLength(255)]
         public string Naziv {get;set; }
         public int MaxBrUcenika {get;set;}
         public int TrBrUcenika {get;set;}

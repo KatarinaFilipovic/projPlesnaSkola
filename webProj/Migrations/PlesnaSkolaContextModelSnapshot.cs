@@ -30,7 +30,8 @@ namespace webProj.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Naziv")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Oznaka")
                         .HasColumnType("nvarchar(max)");
@@ -74,13 +75,15 @@ namespace webProj.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ime")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("PLesID")
                         .HasColumnType("int");
 
                     b.Property<string>("Prezime")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("ID");
 

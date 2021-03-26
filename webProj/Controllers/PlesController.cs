@@ -20,7 +20,7 @@ namespace webProj.Controllers
            Context=context;
         }
 
-       [Route("procitajSkolu/{id}")]
+     /*  [Route("procitajSkolu/{id}")]
         [HttpGet]
         public async Task<PlesnaSkola> procitaPlesnuSKolu(int id)
         {
@@ -32,7 +32,7 @@ namespace webProj.Controllers
 
            // await Context.PlesneSkole.Include().ThenInclude().FirstOrDefaultAsync()
             return skola;
-        }
+        }*/
 
         //lista skola koje se vracaju
         [Route("PreuzmiPlesneSkole")]
@@ -41,7 +41,7 @@ namespace webProj.Controllers
         {
             return await Context.PlesneSkole
             .Include(p =>p.plesovi)
-            .ThenInclude(u =>u.Ucenici)//vidi ovo da li hoce, ovo ikudujemo sve sto nam treba
+            .ThenInclude(u =>u.Ucenici)// ovo inkludujemo sve sto nam treba
             .ToListAsync();  //osim osnovnih podataka o skoli
         }
 
@@ -70,10 +70,6 @@ namespace webProj.Controllers
             var skola=await Context.PlesneSkole.FindAsync(idSkole);
             ples.PlesnaSkola=skola;  //ref na skolu kojoj pripada ples
              
-             //da skola isto u svojoj listi ima ovaj ples.ovo on nije pisao
-            /* skola.plesovi.Add(ples);
-             Context.PlesneSkole.Update(skola);*/
-            /////////////////
 
             Context.Plesovi.Add(ples); //dodajemo u listu plesova
             await Context.SaveChangesAsync();
@@ -148,6 +144,26 @@ namespace webProj.Controllers
         {
             var ucenik=await Context.Ucenici.FindAsync(id);
             return ucenik;
+        }
+
+        [Route("procitajUcenikaNaOIP/{ime}/{prezime}/{email}/{idPlesa}")]
+        [HttpGet]
+        public async Task<Ucenik> procitajUcenika(string ime,string prezime,string email,int idPlesa)
+        {
+            var ples=await Context.Plesovi.FindAsync(idPlesa);
+
+            var ucenik=await Context.Ucenici.Where( u=>u.Ime==ime &&  u.Prezime==prezime && u.Email==email && u.PLes==ples).FirstOrDefaultAsync();
+        
+            return ucenik;
+        }
+         
+         
+         [Route("procitajPles/{oznaka}")]
+        [HttpGet]
+        public async Task<Ples> procitajPles(string oznaka)
+        {
+            var ples=await Context.Plesovi.Where(u =>u.Oznaka==oznaka).FirstOrDefaultAsync();
+            return ples;
         }
 
 

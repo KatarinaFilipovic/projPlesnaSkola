@@ -106,7 +106,11 @@ export class PlesnaSkola
         inpEmail.className="inputEmailUcenika";
         formUcenik.appendChild(inpEmail);
 
-        let opcija=null;
+        let divRadio=document.createElement("div");
+        divRadio.className="divRadioDUg";
+        formUcenik.appendChild(divRadio);
+        this.crtajRadioPles(divRadio);
+      /*  let opcija=null;
         let labela=null;
         let divRb=null;
 
@@ -129,7 +133,7 @@ export class PlesnaSkola
                 divRb.appendChild(labela);
 
 
-            })
+            })*/
 
             const dugmeDodaj=document.createElement("button");
             dugmeDodaj.innerHTML="Dodaj ucenika";
@@ -158,6 +162,7 @@ export class PlesnaSkola
                         {
                             let opcija = document.createElement("option");
                             opcija.innerHTML=u.ime+" "+u.prezime;
+                            opcija.className="opcija"+u.ucenikId;
                             opcija.value=u.ucenikId;
                             
                             sel.appendChild(opcija);
@@ -203,6 +208,37 @@ export class PlesnaSkola
             
 
 
+    }
+    crtajRadioPles(divRadio)
+    {
+        let opcija=null;
+        let labela=null;
+        let divRb=null;
+
+       /* let divRadio=document.createElement("div");
+        divRadio.className="divRadioDUg";
+        formUcenik.appendChild(divRadio);*/
+        let list=["a","b"];//izmenni sa listomPlesa
+       
+         this.listaPlesova.forEach(ples=>
+            {
+                divRb=document.createElement("div");
+               
+                divRadio.appendChild(divRb);
+
+                opcija=document.createElement("input");
+                opcija.type="radio";
+                opcija.name=this.naziv;//da bi se 1 cekiralo 
+                opcija.value=ples.plesId;//mi viidimo 
+              //  console.log(opcija.value);
+                divRb.appendChild(opcija)
+
+                labela=document.createElement("label");
+                labela.innerHTML=ples.naziv;
+                divRb.appendChild(labela);
+
+
+            })
     }
 
     crtajFormuPles(roditelj)
@@ -310,6 +346,7 @@ export class PlesnaSkola
         let trBroj=-1;
         let maxBr=-1;
         
+        
         this.listaPlesova.forEach(p=>
             {
                 if(plesId==p.plesId)
@@ -325,12 +362,65 @@ export class PlesnaSkola
                 //[Route("dodajUcenikaPlesu/{idPlesa}/{ime}/{prezime}/{email}")]
                 fetch("https://localhost:5001/Ples/dodajUcenikaPlesu/"+plesId+"/"+ime+"/"+prezime+"/"+email,
                 {
-                    method:"POST"
+                    method:"POST"    
+                   
                 }
                
-                )
-                this.osveziPrikaz();
-                setTimeout(() => {location.reload()}, 3);
+                ).then(p=>
+                    {
+                        if(p.ok)
+                        {
+                           //[Route("procitajUcenikaNaOIP/{ime}/{prezime}/{email}/{idPlesa}")]
+                           fetch("https://localhost:5001/Ples/procitajUcenikaNaOIP/"+ime+"/"+prezime+"/"+email+"/"+plesId,
+                             {
+                                  method:"GET"
+                             }).then(r=> r.json().then(data=>
+                                {
+                                   //crtanje ucenika nakon dodavanja        
+                                  let plesDiv=this.kontejner.querySelector(".plesMiniKontejner"+plesId);
+                                  let divU=plesDiv.querySelector(".divUcenici");
+                                  let ucen=new Ucenik(ime,prezime,data["id"],email);
+                                  let prazno=divU.querySelector(".miniKontejnerUcenik")
+                                  prazno.className="miniKontejnerUcenik"+data["id"];
+                                  console.log(prazno);
+                                  prazno.innerHTML=ime+"</br>"+prezime;
+                                  prazno.style.backgroundColor="green"; 
+
+                                  //ddavanje u select liste
+                                  let sel=this.kontejner.querySelector(".selectUcenik");
+                                  let opcija = document.createElement("option");
+                                  opcija.className="opcija"+data["id"];
+                                  opcija.innerHTML=ime+" "+prezime;
+                                  opcija.value=data["id"];;
+                            
+                                  sel.appendChild(opcija);
+
+
+                                  //izmena tr br dodatih ucenika
+                                  let lab=plesDiv.querySelector(".LabTrBrMax");
+                                  this.listaPlesova.forEach(p=>
+                                  {
+                                   if(p.plesId==plesId)
+                                   {
+                                    p.listaUcenika.push(ucen);
+                                    console.log(p.listaUcenika);
+                                    p.trBrUcenika=p.trBrUcenika+1;
+                                    lab.innerHTML=p.trBrUcenika+"/"+p.maxBrUcenika;
+                                   }
+
+                                 })
+
+                                }))
+                        }
+                        else 
+                        {
+                            alert("Neuspesno dodavanje ucenika,pokusajte ponovo");
+                        }
+                    })
+              
+              
+                // this.osveziPrikaz();
+              // setTimeout(() => {location.reload()}, 2);
                 
             }
             else
@@ -363,7 +453,7 @@ export class PlesnaSkola
         let emailInput=this.kontejner.querySelector(".inputEmailUcenika");
         let idUcenInp=this.kontejner.querySelector(".inputIdUcenika");
 
-        
+       
     
         fetch("https://localhost:5001/Ples/procitajUcenika/"+idUcenika,
          {
@@ -412,11 +502,71 @@ export class PlesnaSkola
     {
        
         let idUcenika=this.kontejner.querySelector(".selectUcenik").value;
+       
+          
         fetch("https://localhost:5001/Ples/obrisiUcenika/"+idUcenika,
         {
             method:"DELETE"
-        })
-        setTimeout(() => {location.reload()}, 3);
+        }).then(p=>
+            {
+                if(p.ok)
+                {
+                    //brisanje iz polja
+                   
+                    let plesDiv=this.kontejner.querySelectorAll("[class^='plesMiniKontejner']");
+                    console.log(plesDiv);
+                    plesDiv.forEach(p=>
+                        {
+                            console.log(p);
+                            let divU=p.querySelector(".divUcenici");
+                            //console.log(divU);
+
+                            let uc=divU.querySelector(".miniKontejnerUcenik"+idUcenika);
+                            //console.log(uc);
+                            if(uc!=null)
+                            {
+                                divU.removeChild(uc);
+                                uc.innerHTML="Prazno";
+                                uc.className="miniKontejnerUcenik";
+                                uc.style.backgroundColor="lightgray";
+                                divU.appendChild(uc);
+
+                               console.log(p.classList);
+                               let l=p.classList;
+                               let idPlesa=l[1];
+                               console.log(idPlesa);
+                                //azurira tr brojj ucenika
+                                let lab=p.querySelector(".LabTrBrMax");
+                                this.listaPlesova.forEach(pp=>
+                                    {
+                                     if(pp.plesId==idPlesa)
+                                     {
+                                     // pp.listaUcenika.pop(uc);
+                                      console.log(pp.listaUcenika);
+                                      pp.trBrUcenika=pp.trBrUcenika-1;
+                                      lab.innerHTML=pp.trBrUcenika+"/"+pp.maxBrUcenika;
+                                     }
+  
+                                   })
+                              
+
+                            }
+                           
+
+                        })
+                    
+                    //uklanjanje iz select liste ucenika 
+                    let sel=this.kontejner.querySelector(".selectUcenik");
+                    let opcija=this.kontejner.querySelector(".opcija"+idUcenika);
+                    sel.removeChild(opcija);
+
+                    //izmena tr br ucenika
+
+                   
+
+                }
+            })
+      //  setTimeout(() => {location.reload()}, 2);
 
 
 
@@ -428,15 +578,38 @@ export class PlesnaSkola
         let prezimeInput=this.kontejner.querySelector(".inputPrezimeUcenika").value;
         let emailInput=this.kontejner.querySelector(".inputEmailUcenika").value;
         let idUcenInp=this.kontejner.querySelector(".inputIdUcenika").value;
-        let p=this.kontejner.querySelector("input[type=radio]:checked").value;
-        console.log(p);
+        let plesIdd=this.kontejner.querySelector("input[type=radio]:checked").value;//plesId
+        console.log(plesIdd);
         //[Route("izmeniUcenika/{id}/{ime}/{prezime}/{email}")]
         
         fetch("https://localhost:5001/Ples/izmeniUcenika/"+idUcenInp+"/"+imeInput+"/"+prezimeInput+"/"+emailInput,
         {
             method:"PUT"
-        })
-        setTimeout(() => {location.reload()}, 3);
+        }).then(p=>
+            {
+                if(p.ok)
+                {
+                    //izmena polja
+                    alert("Uspesno ste izmenlili ucenika");
+                    let plesDiv=this.kontejner.querySelector(".plesMiniKontejner"+plesIdd);
+
+                    console.log(plesDiv);
+                    let divU=plesDiv.querySelector(".divUcenici");
+                    let prazno=divU.querySelector(".miniKontejnerUcenik"+idUcenInp)
+                    prazno.innerHTML=imeInput+"</br>"+prezimeInput;
+                  
+                    //izmena u listi ucenika kod dugmeta
+                    let sel=this.kontejner.querySelector(".selectUcenik");
+                    let opcija=this.kontejner.querySelector(".opcija"+idUcenInp);
+                    opcija.innerHTML=imeInput+" "+prezimeInput;
+                  
+                }
+                else
+                {
+                    alert("Nije uspesno,pokusajte ponovo");
+                }
+            })
+       // setTimeout(() => {location.reload()}, 2);
 
 
 
@@ -457,9 +630,46 @@ export class PlesnaSkola
                {
                    method:"POST"
                }
+               ).then(p=>
+                {
+                    if(p.ok)
+                    {
+                        fetch("https://localhost:5001/Ples/procitajPles/"+oznaka,
+                       {
+                          method:"GET"
+                       }).then(r=> r.json().then(data=>
+                        {
+                                //crtanje
+                                console.log(data["naziv"]);
+                                let pp=new Ples(oznaka,naziv,maxBr,trBr,data["id"]);
+                                this.dodajPles(pp);
+                                let divU=this.kontejner.querySelector(".divPlesCrtanje");
+                                console.log(divU);
+                                pp.crtajPlesP(divU);
+
+                                //dodvanje  radio dugme
+                                let formUcenik=this.kontejner.querySelector(".formUcenik");
+                                let divR=formUcenik.querySelector(".divRadioDUg");
+                                console.log(divR);
+                                let divRb=document.createElement("div");
+                                divR.appendChild(divRb);
+                                let  opcija=document.createElement("input");
+                                opcija.type="radio";
+                                opcija.name=naziv;//da bi se 1 cekiralo 
+                                opcija.value=data["id"];//mi viidimo 
+                                divRb.appendChild(opcija)
+
+                                let labela=document.createElement("label");
+                                labela.innerHTML=naziv;
+                                divRb.appendChild(labela);
+                                
+                            
+                        }))
+
+
+                    }
+                })
               
-               )
-               setTimeout(() => {location.reload()}, 3);
 
               
         }

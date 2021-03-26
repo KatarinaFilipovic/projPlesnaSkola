@@ -46,7 +46,8 @@
     margin-bottom: 5px;;
 
 }
-.plesMiniKontejner
+[class^='plesMiniKontejner']
+
 {
     display: flex;
     flex-direction: row;
@@ -64,7 +65,8 @@
     
 
 }
-.miniKontejnerUcenik
+[class^='miniKontejnerUcenik']
+
 {
     display: flex;
    
@@ -75,6 +77,7 @@
     height: 60px;
     text-align: center;
     background-color:lightgray;
+    flex:100%;
     
    
 }
@@ -173,10 +176,103 @@
     display: none;
 
 }
-.ucLabIme,.ucLabPrezime
+.divRadio
 {
-    max-width: 50px;
-    text-align: center;
-    
-    
+    display:flex;
+    flex-direction: column;
 }
+
+@media only screen and (max-width: 800px)  {
+    .kontejner{
+        flex-direction: column;
+        
+    }
+    
+  }
+  @media only screen and (max-device-width:500px)  {
+    .kontejner{
+        flex-direction: column;
+        
+    }
+    
+  }
+  @media only screen and (max-width: 800px)  {
+    .divForma{
+        flex-direction: row;
+        
+    }
+    
+  }
+  @media only screen and (max-device-width:500px)  {
+    .divForma{
+        flex-direction: row;
+       
+        
+    }
+    
+  }
+  
+   @media only screen and (max-device-width:250px)  {
+    [class^='plesMiniKontejner']
+    {
+        flex-direction: column;
+      
+        
+    }
+    
+  }
+  @media only screen and (max-width:645px)  {
+[class^='plesMiniKontejner']
+{
+       
+        flex-direction: column;
+      
+        
+    }
+    
+  }
+  @media only screen and (max-device-width:500px)  {
+    .formUcenik{
+        width: 50%;
+       
+        
+    }
+    
+  }
+  @media only screen and (max-width:800px)  {
+    .formUcenik{
+        width: 50%;
+       
+        
+    }
+    
+  }
+  @media only screen and (max-device-width:500px)  {
+    .formPles
+    {
+       width: 50%;
+
+       
+        
+    }
+    
+  }
+  @media only screen and (max-width:800px)  {
+    .formPles
+    {
+       width: 50%;
+
+       
+        
+    }
+    
+  }
+  
+  
+
+@media only screen and (max-width:510px)  {
+    .divDugmeta
+    {
+        flex-direction: column; 
+        
+}}

@@ -40,7 +40,10 @@ export class Ples
     crtajPlesP(roditelj)
     {
          this.miniKontejner=document.createElement("div");
-            this.miniKontejner.className="plesMiniKontejner";
+            this.miniKontejner.className="plesMiniKontejner"+this.plesId;
+            this.miniKontejner.classList.add(this.plesId);
+            
+            
             roditelj.appendChild(this.miniKontejner);
 
         

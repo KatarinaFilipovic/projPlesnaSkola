@@ -24,10 +24,10 @@ export class Ucenik
     crtajUcenika(roditelj)
     {
         this.kontejnerMini=document.createElement("div");
-        this.kontejnerMini.className="miniKontejnerUcenik";
+        this.kontejnerMini.className="miniKontejnerUcenik"+this.ucenikId;
         roditelj.appendChild(this.kontejnerMini);
       
-            let lab=document.createElement("label");
+           /* let lab=document.createElement("label");
             lab.innerHTML=this.ime;
             lab.className="ucLabIme";
             this.kontejnerMini.appendChild(lab);
@@ -36,11 +36,19 @@ export class Ucenik
             lab.innerHTML=this.prezime;
             lab.className="ucLabPrezime";
 
-            this.kontejnerMini.appendChild(lab);
+            this.kontejnerMini.appendChild(lab);*/
+            this.kontejnerMini.innerHTML=this.ime+"</br>"+this.prezime;
 
             this.kontejnerMini.style.backgroundColor="green";
 
         
 
     }
+    azurirajUcenika(ime,prez)
+    {
+      this.kontejnerMini.innerHTML=ime+"</br>"+prez;
+      this.kontejnerMini.style.backgroundColor="green";
+
+    }
+
 }

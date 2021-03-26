@@ -15,6 +15,7 @@ namespace webProj.Models
         public string Email {get;set;}
 
         [JsonIgnore]
+        //[Column("plesId")]
         public Ples PLes {get;set;}
 
 
